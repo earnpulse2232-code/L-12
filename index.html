@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#f8fafc">
+    <title>Indian Polity - Lecture 12: Union Executive</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --bg-main: #f8fafc; --bg-card: #ffffff; --primary: #2563eb; --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff; --text-dark: #0f172a; --text-muted: #64748b; --border-color: #e2e8f0;
+            --green: #10b981; --green-light: #ecfdf5; --red: #ef4444; --red-light: #fef2f2;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08);
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-dark); min-height: 100dvh; font-size: 15px; line-height: 1.5; overflow-x: hidden; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+        .hidden { display: none !important; }
+        .start-screen { position: fixed; inset: 0; background: var(--bg-main); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .start-card { width: 100%; max-width: 440px; background: var(--bg-card); border-radius: 24px; padding: 36px 28px; box-shadow: var(--shadow-lg); text-align: center; border: 1px solid var(--border-color); }
+        .brand-icon { width: 60px; height: 60px; background: var(--primary-light); color: var(--primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 16px; }
+        .start-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+        .start-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+        .mode-btn { display: flex; align-items: center; gap: 16px; width: 100%; padding: 16px; background: #fff; border: 1.5px solid var(--border-color); border-radius: 16px; text-align: left; margin-bottom: 12px; transition: all 0.2s ease; }
+        .mode-btn:hover { border-color: var(--primary); background: var(--primary-light); transform: translateY(-2px); }
+        .mode-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+        .mode-icon.quiz { background: #dbeafe; color: #2563eb; }
+        .mode-icon.test { background: #d1fae5; color: #059669; }
+        .mode-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+        .mode-info-txt { font-size: 12px; color: var(--text-muted); }
+        .quiz-app { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        .quiz-header { flex-shrink: 0; background: #fff; border-bottom: 1px solid var(--border-color); padding: 12px 18px; }
+        .quiz-header-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .hdr-brand { font-weight: 700; font-size: 15px; }
+        .hdr-timer { padding: 6px 14px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 20px; font-family: monospace; font-weight: 700; color: var(--primary); }
+        .hdr-btn { width: 38px; height: 38px; border-radius: 10px; background: #fff; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; }
+        .quiz-main { flex: 1; overflow-y: auto; max-width: 900px; width: 100%; margin: 0 auto; padding: 24px 16px; }
+        .q-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); }
+        .q-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .q-num-badge { padding: 5px 12px; background: var(--primary-light); color: var(--primary); border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .lang-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border-color); font-size: 12px; font-weight: 600; background: #fff; display: inline-flex; align-items: center; gap: 6px; }
+        .q-text { font-size: 16px; font-weight: 600; line-height: 1.6; margin-bottom: 22px; white-space: pre-line; }
+        .opts { display: flex; flex-direction: column; gap: 11px; }
+        .opt { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: #fff; border: 1.5px solid var(--border-color); border-radius: 14px; cursor: pointer; transition: all 0.15s ease; }
+        .opt:hover:not(.locked) { border-color: var(--primary); background: #f8fafc; }
+        .opt.selected { border-color: var(--primary); background: var(--primary-light); }
+        .opt.correct { border-color: var(--green); background: var(--green-light); }
+        .opt.wrong { border-color: var(--red); background: var(--red-light); }
+        .opt.locked { cursor: default; }
+        .opt-letter { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--text-muted); flex-shrink: 0; }
+        .opt.selected .opt-letter { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .opt.correct .opt-letter { background: var(--green); color: #fff; border-color: var(--green); }
+        .opt.wrong .opt-letter { background: var(--red); color: #fff; border-color: var(--red); }
+        .opt-text { flex: 1; font-weight: 600; }
+        .opt-tag { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+        .opt.correct .opt-tag { background: var(--green); color: #fff; }
+        .opt.wrong .opt-tag { background: var(--red); color: #fff; }
+        .sol-box { margin-top: 20px; padding: 16px; background: #f8fafc; border-left: 4px solid var(--primary); border-radius: 12px; }
+        .sol-head { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--primary); margin-bottom: 8px; }
+        .quiz-nav { flex-shrink: 0; background: #fff; border-top: 1px solid var(--border-color); padding: 12px 18px; }
+        .quiz-nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .nav-btn { display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; }
+        .nav-btn.prev { background: #fff; border: 1px solid var(--border-color); }
+        .nav-btn.prev:disabled { opacity: 0.4; cursor: not-allowed; }
+        .nav-btn.submit { background: var(--green-light); color: #065f46; border: 1px solid #a7f3d0; }
+        .nav-btn.next { background: var(--primary); color: #fff; }
+        .palette-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 150; display: none; }
+        .palette-overlay.open { display: block; }
+        .palette-drawer { position: fixed; top: 0; left: 0; bottom: 0; width: min(340px, 85vw); background: #fff; z-index: 160; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform 0.25s; }
+        .palette-drawer.open { transform: translateX(0); }
+        .pal-head { padding: 18px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; font-weight: 700; }
+        .pal-grid { flex: 1; overflow-y: auto; padding: 16px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; align-content: start; }
+        .pal-btn { aspect-ratio: 1; border-radius: 10px; border: 1px solid var(--border-color); background: #f8fafc; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+        .pal-btn.answered { background: var(--green); color: #fff; border-color: var(--green); }
+        .pal-btn.current { outline: 2px solid var(--primary); outline-offset: 2px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 170; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { width: 100%; max-width: 420px; background: #fff; border-radius: 20px; padding: 28px; text-align: center; }
+        .modal-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 22px; }
+        .modal-stat { background: #f8fafc; border-radius: 12px; padding: 14px; border: 1px solid var(--border-color); }
+        .modal-stat-num { font-size: 24px; font-weight: 800; }
+        .modal-btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .modal-btn.confirm { background: var(--primary); color: #fff; }
+        .modal-btn.cancel { background: #f1f5f9; }
+        .results-screen { position: fixed; inset: 0; background: var(--bg-main); z-index: 180; display: none; overflow-y: auto; padding: 30px 16px 60px; }
+        .results-screen.open { display: block; }
+        .results-box { max-width: 600px; margin: 0 auto; text-align: center; }
+        .res-score-card { background: #0f172a; color: #fff; border-radius: 20px; padding: 28px; margin: 20px 0; }
+        .res-score-val { font-size: 54px; font-weight: 800; }
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .res-item { background: #fff; border-radius: 14px; padding: 16px; border: 1px solid var(--border-color); }
+        .res-item-val { font-size: 22px; font-weight: 700; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px); background: #0f172a; color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; z-index: 300; opacity: 0; transition: all 0.25s; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="start-screen" id="startScreen">
+        <div class="start-card">
+            <div class="brand-icon"><i class="fas fa-landmark"></i></div>
+            <h1 class="start-title">Polity: Lecture 12</h1>
+            <p class="start-desc">Executive Powers, Prime Minister & Council of Ministers</p>
+            <button class="mode-btn" onclick="startApp('quiz')">
+                <div class="mode-icon quiz"><i class="fas fa-bolt"></i></div>
+                <div><div class="mode-name">Practice Mode</div><div class="mode-info-txt">Instant correct/wrong answer and explanations.</div></div>
+            </button>
+            <button class="mode-btn" onclick="startApp('test')">
+                <div class="mode-icon test"><i class="fas fa-clock"></i></div>
+                <div><div class="mode-name">Exam Mode</div><div class="mode-info-txt">Mock exam with timer and score summary.</div></div>
+            </button>
+        </div>
+    </div>
+
+    <div class="quiz-app hidden" id="quizApp">
+        <header class="quiz-header">
+            <div class="quiz-header-inner">
+                <button class="hdr-btn" onclick="openPalette()"><i class="fas fa-th-large"></i></button>
+                <div class="hdr-brand">Lecture 12 - Core Concepts</div>
+                <div class="hdr-timer"><i class="fas fa-stopwatch"></i> <span id="timerText">00:00</span></div>
+            </div>
+        </header>
+
+        <main class="quiz-main" id="quizMain"></main>
+
+        <nav class="quiz-nav" id="quizNav">
+            <div class="quiz-nav-inner">
+                <button class="nav-btn prev" id="prevBtn" onclick="prevQuestion()"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn submit" onclick="openSubmitModal()"><i class="fas fa-paper-plane"></i> Submit</button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextQuestion()"><span id="nextLabel">Next</span> <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </nav>
+    </div>
+
+    <div class="palette-overlay" id="paletteOverlay" onclick="closePalette()"></div>
+    <aside class="palette-drawer" id="paletteDrawer">
+        <div class="pal-head"><span>Questions</span><button onclick="closePalette()"><i class="fas fa-times"></i></button></div>
+        <div class="pal-grid" id="paletteGrid"></div>
+    </aside>
+
+    <div class="modal-overlay" id="submitModal">
+        <div class="modal-box">
+            <h3>Submit Test?</h3>
+            <div class="modal-stats-grid">
+                <div class="modal-stat"><div class="modal-stat-num" id="modalAttempted" style="color:var(--green)">0</div><div>Attempted</div></div>
+                <div class="modal-stat"><div class="modal-stat-num" id="modalUnattempted" style="color:var(--text-muted)">0</div><div>Unattempted</div></div>
+            </div>
+            <button class="modal-btn confirm" onclick="confirmSubmit()">Yes, Finish</button>
+            <button class="modal-btn cancel" onclick="closeSubmitModal()">Resume</button>
+        </div>
+    </div>
+
+    <div class="results-screen" id="resultsScreen"><div class="results-box" id="resultsInner"></div></div>
+    <div class="toast" id="toast"><span id="toastText"></span></div>
+
+    <script>
+        const QUESTIONS = [
+            {
+                e: "Under Article 72, which type of pardoning power denotes substituting one form of punishment for a lighter form?",
+                h: "अनुच्छेद 72 के तहत, किस प्रकार की क्षमादान शक्ति सज़ा के स्वरूप को बदलकर उसे कम कठोर करने को दर्शाती है?",
+                oEn: ["Remission", "Commutation", "Respite", "Reprieve"],
+                oHi: ["परिहार (Remission)", "लघुकरण (Commutation)", "विराम (Respite)", "प्रविलंबन (Reprieve)"],
+                a: 1,
+                sE: "Commutation means substitution of one form of punishment for a lighter form (e.g., converting death penalty into rigorous imprisonment).",
+                sH: "लघुकरण (Commutation) का अर्थ सज़ा के स्वरूप को बदलना है (जैसे मृत्युदंड को आजीवन कारावास में बदलना)।"
+            },
+            {
+                e: "Reducing the period of sentence without changing its fundamental character is termed as:",
+                h: "सज़ा के मूल स्वरूप को बदले बिना उसकी अवधि को कम करना क्या कहलाता है?",
+                oEn: ["Respite", "Reprieve", "Remission", "Pardon"],
+                oHi: ["विराम (Respite)", "प्रविलंबन (Reprieve)", "परिहार (Remission)", "क्षमा (Pardon)"],
+                a: 2,
+                sE: "Remission reduces the amount of sentence without altering the nature of the punishment (e.g., reducing imprisonment from 5 years to 3 years).",
+                sH: "परिहार (Remission) में सज़ा की प्रकृति बदले बिना केवल उसकी अवधि कम की जाती है।"
+            },
+            {
+                e: "Awarding a lesser sentence instead of the penalty originally prescribed due to special circumstances (e.g., pregnancy or physical disability) is known as:",
+                h: "विशेष परिस्थितियों (जैसे गर्भावस्था या शारीरिक विकलांगता) के कारण मूल रूप से निर्धारित सज़ा को कम करना क्या कहलाता है?",
+                oEn: ["Commutation", "Reprieve", "Respite", "Pardon"],
+                oHi: ["लघुकरण (Commutation)", "प्रविलंबन (Reprieve)", "विराम (Respite)", "क्षमा (Pardon)"],
+                a: 2,
+                sE: "Respite denotes awarding a lesser punishment in place of one originally stipulated, based on special facts like pregnancy.",
+                sH: "विराम (Respite) किसी विशेष परिस्थिति (जैसे गर्भावस्था) के आधार पर दी जाने वाली कम सज़ा होती है।"
+            },
+            {
+                e: "A temporary stay on the execution of a sentence (especially death penalty) to allow time to seek pardon or commutation is called:",
+                h: "क्षमा या लघुकरण की प्रार्थना का समय देने के लिए सज़ा (विशेषकर मृत्युदंड) के निष्पादन पर अस्थायी रोक लगाना क्या कहलाता है?",
+                oEn: ["Reprieve", "Remission", "Respite", "Commutation"],
+                oHi: ["प्रविलंबन (Reprieve)", "परिहार (Remission)", "विराम (Respite)", "लघुकरण (Commutation)"],
+                a: 0,
+                sE: "Reprieve implies a stay on the execution of a sentence for a temporary period.",
+                sH: "प्रविलंबन (Reprieve) का अर्थ है किसी सज़ा के निष्पादन पर अस्थायी अवधि के लिए रोक लगाना।"
+            },
+            {
+                e: "In which landmark case did the Supreme Court rule that the pardoning power under Article 72 is exercised on the aid and advice of the Council of Ministers and is subject to limited judicial review?",
+                h: "किस ऐतिहासिक मामले में उच्चतम न्यायालय ने यह माना कि अनुच्छेद 72 के तहत क्षमादान शक्ति का प्रयोग मंत्रिपरिषद की सलाह पर किया जाना चाहिए और यह सीमित न्यायिक समीक्षा के अधीन है?",
+                oEn: ["Kesavananda Bharati v. State of Kerala (1973)", "Maru Ram v. Union of India (1980)", "Minerva Mills v. Union of India (1980)", "Maneka Gandhi v. Union of India (1978)"],
+                oHi: ["केशवानंद भारती बनाम केरल राज्य (1973)", "मारु राम बनाम भारत संघ (1980)", "मिनर्वा मिल्स बनाम भारत संघ (1980)", "मेनका गांधी बनाम भारत संघ (1978)"],
+                a: 1,
+                sE: "In Maru Ram v. Union of India (1980), the SC held that the President's pardoning power under Article 72 is not absolute personal discretion and is bound by ministerial advice.",
+                sH: "मारु राम बनाम भारत संघ (1980) में सुप्रीम कोर्ट ने माना कि राष्ट्रपति की क्षमादान शक्ति मंत्रिपरिषद की सलाह पर प्रयोग की जाती है।"
+            },
+            {
+                e: "In Kehar Singh v. Union of India (1988), on what grounds did the Supreme Court hold that the President's pardon can be subjected to judicial review?",
+                h: "केहर सिंह बनाम भारत संघ (1988) मामले में सुप्रीम कोर्ट के अनुसार किन आधारों पर राष्ट्रपति की क्षमादान शक्ति की न्यायिक समीक्षा की जा सकती है?",
+                oEn: ["Only if approved by the Chief Justice of India", "If the decision is arbitrary, irrational, discriminatory, or mala fide", "Whenever any citizen files a Public Interest Litigation (PIL)", "The decision cannot be reviewed under any circumstances"],
+                oHi: ["केवल तभी जब CJI द्वारा अनुमोदित हो", "यदि निर्णय मनमाना, अविवेकपूर्ण, भेदभावपूर्ण या दुर्भावनापूर्ण हो", "जब भी कोई नागरिक जनहित याचिका दायर करे", "किसी भी परिस्थिति में समीक्षा नहीं की जा सकती"],
+                a: 1,
+                sE: "In Kehar Singh (1988), the SC held that the President's pardoning decision is not generally subject to judicial review unless it is arbitrary, mala fide, or discriminatory.",
+                sH: "केहर सिंह (1988) मामले में कहा गया कि निर्णय तभी न्यायिक समीक्षा के अधीन है यदि वह मनमाना, दुर्भावनापूर्ण, अविवेकपूर्ण या भेदभावपूर्ण हो।"
+            },
+            {
+                e: "Which Article of the Constitution deals with the pardoning powers of a State Governor?",
+                h: "संविधान का कौन सा अनुच्छेद राज्य के राज्यपाल की क्षमादान शक्तियों से संबंधित है?",
+                oEn: ["Article 153", "Article 161", "Article 164", "Article 167"],
+                oHi: ["अनुच्छेद 153", "अनुच्छेद 161", "अनुच्छेद 164", "अनुच्छेद 167"],
+                a: 1,
+                sE: "Article 161 empowers the Governor of a state to grant pardons, reprieves, respites or remissions of punishment for offenses against laws relating to the executive power of the state.",
+                sH: "अनुच्छेद 161 राज्य के राज्यपाल की क्षमादान शक्तियों से संबंधित है।"
+            },
+            {
+                e: "Which pardoning power is exclusively held by the President and NOT by a State Governor?",
+                h: "कौन सी क्षमादान शक्ति केवल राष्ट्रपति के पास है, राज्य के राज्यपाल के पास नहीं?",
+                oEn: ["Power to commute a sentence", "Power to remit punishment", "Power to fully pardon a death sentence", "Power to grant respite"],
+                oHi: ["सज़ा को लघुकरण करने की शक्ति", "सज़ा को परिहार करने की शक्ति", "मृत्युदंड को पूरी तरह क्षमा (Pardon) करने की शक्ति", "सज़ा पर विराम देने की शक्ति"],
+                a: 2,
+                sE: "Only the President can completely pardon a death sentence. The Governor can suspend, remit, or commute a death sentence, but cannot fully pardon it.",
+                sH: "मृत्युदंड को पूरी तरह क्षमा (Pardon) केवल राष्ट्रपति कर सकते हैं, राज्यपाल नहीं।"
+            },
+            {
+                e: "Advice tendered by the Supreme Court to the President under Article 143 is:",
+                h: "अनुच्छेद 143 के तहत उच्चतम न्यायालय द्वारा राष्ट्रपति को दी गई सलाह:",
+                oEn: ["Binding on the President", "Not binding on the President", "Binding only if approved by the Council of Ministers", "Binding only during emergency"],
+                oHi: ["राष्ट्रपति पर बाध्यकारी है", "राष्ट्रपति पर बाध्यकारी नहीं है", "केवल तभी बाध्यकारी है जब मंत्रिपरिषद स्वीकृत करे", "केवल आपातकाल के दौरान बाध्यकारी है"],
+                a: 1,
+                sE: "The advisory opinion given by the Supreme Court under Article 143 is consultative and not binding on the President.",
+                sH: "अनुच्छेद 143 के तहत उच्चतम न्यायालय द्वारा दी गई सलाह परामर्शीय होती है और राष्ट्रपति पर बाध्यकारी नहीं होती।"
+            },
+            {
+                e: "According to Article 74(2), what is the constitutional position regarding the advice given by Ministers to the President?",
+                h: "अनुच्छेद 74(2) के अनुसार मंत्रियों द्वारा राष्ट्रपति को दी गई सलाह के संबंध में क्या संवैधानिक स्थिति है?",
+                oEn: ["It must be published in the Official Gazette", "It shall not be inquired into by any court of law", "It is subject to mandatory judicial review by the Supreme Court", "It must be verified by the Comptroller and Auditor General"],
+                oHi: ["इसे राजपत्र में प्रकाशित किया जाना चाहिए", "किसी भी न्यायालय द्वारा इसकी जांच नहीं की जाएगी", "उच्चतम न्यायालय द्वारा इसकी अनिवार्य न्यायिक समीक्षा होगी", "CAG द्वारा इसका सत्यापन किया जाना अनिवार्य है"],
+                a: 1,
+                sE: "Article 74(2) states that the question whether any, and if so what, advice was tendered by Ministers to the President shall not be inquired into in any court.",
+                sH: "अनुच्छेद 74(2) स्पष्ट करता है कि मंत्रियों द्वारा राष्ट्रपति को क्या सलाह दी गई, इसकी किसी भी न्यायालय में जांच नहीं की जा सकती।"
+            },
+            {
+                e: "The Prime Minister serves as the ex-officio Chairman of which of the following bodies?",
+                h: "प्रधानमंत्री निम्नलिखित में से किस निकाय के पदेन अध्यक्ष होते हैं?",
+                oEn: ["NITI Aayog, Inter-State Council, and NDMA", "Finance Commission and Law Commission", "UPSC and Election Commission", "National Human Rights Commission"],
+                oHi: ["नीति आयोग, अंतर्राज्यीय परिषद और राष्ट्रीय आपदा प्रबंधन प्राधिकरण (NDMA)", "वित्त आयोग और विधि आयोग", "संघ लोक सेवा आयोग और चुनाव आयोग", "राष्ट्रीय मानवाधिकार आयोग"],
+                a: 0,
+                sE: "The Prime Minister is the Chairman of NITI Aayog, the Inter-State Council, and the National Disaster Management Authority (NDMA).",
+                sH: "प्रधानमंत्री नीति आयोग, अंतर्राज्यीय परिषद और राष्ट्रीय आपदा प्रबंधन प्राधिकरण (NDMA) के पदेन अध्यक्ष होते हैं।"
+            },
+            {
+                e: "The 44th Constitutional Amendment Act, 1978 introduced what provision regarding ministerial advice to the President?",
+                h: "44वें संविधान संशोधन अधिनियम, 1978 ने राष्ट्रपति को मंत्रिपरिषद की सलाह के संबंध में क्या प्रावधान दिया?",
+                oEn: ["The President can outright reject the advice permanently", "The President can return the advice once for reconsideration", "The advice became optional for the President", "The President must seek Supreme Court permission to accept advice"],
+                oHi: ["राष्ट्रपति सलाह को स्थायी रूप से सीधे खारिज कर सकते हैं", "राष्ट्रपति सलाह को एक बार पुनर्विचार के लिए वापस भेज सकते हैं", "सलाह राष्ट्रपति के लिए वैकल्पिक हो गई", "सलाह स्वीकार करने के लिए सुप्रीम कोर्ट की अनुमति अनिवार्य की गई"],
+                a: 1,
+                sE: "The 44th Amendment provided that the President may require the Council of Ministers to reconsider such advice, but must act in accordance with the advice tendered after reconsideration.",
+                sH: "44वें संशोधन ने यह प्रावधान जोड़ा कि राष्ट्रपति मंत्रिपरिषद से सलाह पर एक बार पुनर्विचार करने का अनुरोध कर सकते हैं, किंतु पुनर्विचार के बाद दी गई सलाह बाध्यकारी होगी।"
+            },
+            {
+                e: "In the U.N.R. Rao v. Indira Gandhi (1971) case, what did the Supreme Court clarify regarding the Council of Ministers?",
+                h: "यू.एन.आर. राव बनाम इंदिरा गांधी (1971) मामले में उच्चतम न्यायालय ने मंत्रिपरिषद के संबंध में क्या स्पष्ट किया?",
+                oEn: ["Council of Ministers is dissolved immediately upon dissolution of Lok Sabha", "A Council of Ministers must always exist to aid and advise the President, even after Lok Sabha dissolution", "Ministers cannot draw salaries during elections", "President assumes direct control without any ministers"],
+                oHi: ["लोकसभा भंग होते ही मंत्रिपरिषद स्वतः पूरी तरह समाप्त हो जाती है", "लोकसभा भंग होने के बाद भी राष्ट्रपति को सलाह देने के लिए मंत्रिपरिषद का अस्तित्व बना रहता है", "चुनाव के दौरान मंत्री वेतन नहीं ले सकते", "राष्ट्रपति बिना किसी मंत्री के सीधे शासन संभालते हैं"],
+                a: 1,
+                sE: "The SC held that Article 74(1) is mandatory and the President cannot function without a Council of Ministers, so it does not cease to exist upon Lok Sabha dissolution.",
+                sH: "सुप्रीम कोर्ट ने कहा कि अनुच्छेद 74(1) अनिवार्य है और राष्ट्रपति बिना मंत्रिपरिषद के कार्य नहीं कर सकते, इसलिए लोकसभा भंग होने पर भी मंत्रिपरिषद बनी रहती है।"
+            },
+            {
+                e: "Under Article 75(1B), added by the 91st Amendment (2003), a legislator disqualified under the Anti-Defection Law:",
+                h: "91वें संशोधन (2003) द्वारा जोड़े गए अनुच्छेद 75(1B) के तहत, दलबदल के आधार पर अयोग्य घोषित सदस्य:",
+                oEn: ["Can be appointed Minister for a maximum of 6 months", "Cannot be appointed as a Minister during the period of disqualification", "Can be appointed only as Deputy Minister", "Can continue as Minister if permitted by the Prime Minister"],
+                oHi: ["अधिकतम 6 महीने के लिए मंत्री नियुक्त किया जा सकता है", "अयोग्यता की अवधि के दौरान मंत्री के रूप में नियुक्त होने के लिए अयोग्य होगा", "केवल उप मंत्री के रूप में नियुक्त किया जा सकता है", "प्रधानमंत्री की अनुमति मिलने पर मंत्री बना रह सकता है"],
+                a: 1,
+                sE: "Article 75(1B) bars a member of either House disqualified on grounds of defection (under the 10th Schedule) from being appointed as a minister.",
+                sH: "अनुच्छेद 75(1B) के अनुसार 10वीं अनुसूची (दलबदल) के तहत अयोग्य घोषित व्यक्ति मंत्री बनने के लिए भी अयोग्य हो जाता है।"
+            },
+            {
+                e: "According to Article 75(2), ministers hold office during the pleasure of the:",
+                h: "अनुच्छेद 75(2) के अनुसार, मंत्री किसके प्रसादपर्यंत (इच्छापर्यंत) पद धारण करते हैं?",
+                oEn: ["Prime Minister", "Speaker of Lok Sabha", "President", "Parliament"],
+                oHi: ["प्रधानमंत्री", "लोकसभा अध्यक्ष", "राष्ट्रपति", "संसद"],
+                a: 2,
+                sE: "Under Article 75(2), ministers hold office during the pleasure of the President (individual responsibility).",
+                sH: "अनुच्छेद 75(2) के तहत मंत्री राष्ट्रपति के प्रसादपर्यंत पद धारण करते हैं (व्यक्तिगत उत्तरदायित्व)।"
+            },
+            {
+                e: "Which Schedule of the Indian Constitution specifies the salaries and allowances of Ministers until Parliament fixes them by law?",
+                h: "जब तक संसद कानून द्वारा तय नहीं करती, तब तक मंत्रियों के वेतन और भत्ते संविधान की किस अनुसूची के अनुसार निर्धारित होते हैं?",
+                oEn: ["First Schedule", "Second Schedule", "Third Schedule", "Fourth Schedule"],
+                oHi: ["पहली अनुसूची", "दूसरी अनुसूची", "तीसरी अनुसूची", "चौथी अनुसूची"],
+                a: 1,
+                sE: "Article 75(6) specifies that until Parliament determines salaries and allowances of Ministers, they shall be as specified in the Second Schedule.",
+                sH: "अनुच्छेद 75(6) के अनुसार संसद द्वारा कानून बनाए जाने तक मंत्रियों के वेतन और भत्ते दूसरी अनुसूची में निर्दिष्ट अनुसार होंगे।"
+            },
+            {
+                e: "The term 'Cabinet' was inserted into the Indian Constitution through which Amendment?",
+                h: "'कैबिनेट' (मंत्रिमंडल) शब्द को भारतीय संविधान में किस संशोधन के माध्यम से शामिल किया गया था?",
+                oEn: ["42nd Amendment Act, 1976", "44th Amendment Act, 1978", "52nd Amendment Act, 1985", "91st Amendment Act, 2003"],
+                oHi: ["42वाँ संशोधन अधिनियम, 1976", "44वाँ संशोधन अधिनियम, 1978", "52वाँ संशोधन अधिनियम, 1985", "91वाँ संशोधन अधिनियम, 2003"],
+                a: 1,
+                sE: "The word 'Cabinet' was inserted in Article 352 by the 44th Constitutional Amendment Act, 1978. It was not in the original Constitution.",
+                sH: "'कैबिनेट' शब्द को 44वें संविधान संशोधन 1978 द्वारा अनुच्छेद 352 में शामिल किया गया था।"
+            },
+            {
+                e: "What qualification is constitutionally required to be appointed as the Attorney General of India under Article 76(1)?",
+                h: "अनुच्छेद 76(1) के तहत भारत का महान्यायवादी (Attorney General) नियुक्त होने के लिए क्या योग्यता अनिवार्य है?",
+                oEn: ["Qualified to be appointed as a Judge of the Supreme Court", "Qualified to be a Member of Rajya Sabha", "At least 15 years experience as a District Judge", "Must be the senior-most advocate of the High Court"],
+                oHi: ["उच्चतम न्यायालय का न्यायाधीश नियुक्त होने के योग्य होना चाहिए", "राज्यसभा का सदस्य बनने के योग्य होना चाहिए", "जिला न्यायाधीश के रूप में कम से कम 15 वर्ष का अनुभव", "उच्च न्यायालय का वरिष्ठतम अधिवक्ता होना चाहिए"],
+                a: 0,
+                sE: "Article 76(1) states that the President appoints a person who is qualified to be appointed a Judge of the Supreme Court to be Attorney General.",
+                sH: "अनुच्छेद 76(1) के अनुसार महान्यायवादी पद के लिए उच्चतम न्यायालय का न्यायाधीश बनने की योग्यता होना अनिवार्य है।"
+            },
+            {
+                e: "Under Article 76(3), in which courts does the Attorney General of India have the right of audience?",
+                h: "अनुच्छेद 76(3) के तहत भारत के महान्यायवादी को किन न्यायालयों में सुनवाई का अधिकार (Right of Audience) प्राप्त है?",
+                oEn: ["Only the Supreme Court of India", "All courts within the territory of India", "Only High Courts and the Supreme Court", "Only Central Administrative Tribunals"],
+                oHi: ["केवल भारत के उच्चतम न्यायालय में", "भारत के राज्यक्षेत्र के भीतर सभी न्यायालयों में", "केवल उच्च न्यायालयों और उच्चतम न्यायालय में", "केवल केंद्रीय प्रशासनिक न्यायाधिकरणों में"],
+                a: 1,
+                sE: "Article 76(3) provides that the AG has the right of audience in all courts in the territory of India.",
+                sH: "अनुच्छेद 76(3) के अनुसार महान्यायवादी को भारत के राज्यक्षेत्र के भीतर सभी न्यायालयों में सुनवाई का अधिकार है।"
+            },
+            {
+                e: "Who was the first and longest-serving Attorney General of India?",
+                h: "भारत के प्रथम और सबसे लंबे समय तक सेवा देने वाले महान्यायवादी कौन थे?",
+                oEn: ["C.K. Daphtary", "M.C. Setalvad", "Soli Sorabjee", "Niren De"],
+                oHi: ["सी.के. दफ्तरी", "एम.सी. सीतलवाड़", "सोली सोराबजी", "निरेन डे"],
+                a: 1,
+                sE: "M.C. Setalvad was India's first Attorney General and served the longest tenure (1950–1963).",
+                sH: "एम.सी. सीतलवाड़ भारत के पहले और सबसे लंबे कार्यकाल वाले महान्यायवादी थे (1950–1963)।"
+            },
+            {
+                e: "Which of the following is correct regarding the office of the Solicitor General of India?",
+                h: "भारत के महान्यायाभिकर्ता (Solicitor General) के पद के संबंध में निम्नलिखित में से कौन सा कथन सही है?",
+                oEn: ["It is a constitutional office created under Article 76", "It is a statutory/executive post and not mentioned in the Constitution", "The Solicitor General is appointed directly by the Chief Justice of India", "The Solicitor General has voting rights in the Lok Sabha"],
+                oHi: ["यह अनुच्छेद 76 के तहत एक संवैधानिक पद है", "यह एक गैर-संवैधानिक/कार्यकारी पद है और संविधान में इसका उल्लेख नहीं है", "सॉलिसिटर जनरल की नियुक्ति CJI द्वारा की जाती है", "सॉलिसिटर जनरल को लोकसभा में मतदान का अधिकार है"],
+                a: 1,
+                sE: "The office of the Solicitor General assists the AG but is not a constitutional post (not created by Article 76).",
+                sH: "सॉलिसिटर जनरल का पद एक गैर-संवैधानिक पद है, इसका उल्लेख संविधान के अनुच्छेद 76 में नहीं है।"
+            },
+            {
+                e: "Which Article of the Constitution provides for the Advocate General of the State?",
+                h: "राज्य के महाधिवक्ता (Advocate General of the State) का प्रावधान संविधान के किस अनुच्छेद में है?",
+                oEn: ["Article 76", "Article 165", "Article 177", "Article 148"],
+                oHi: ["अनुच्छेद 76", "अनुच्छेद 165", "अनुच्छेद 177", "अनुच्छेद 148"],
+                a: 1,
+                sE: "Article 165 provides for the Advocate General for the State, appointed by the Governor.",
+                sH: "अनुच्छेद 165 राज्य के महाधिवक्ता से संबंधित है, जिनकी नियुक्ति राज्यपाल करते हैं।"
+            },
+            {
+                e: "What happens to the Union Council of Ministers if the Prime Minister suddenly resigns or dies in office?",
+                h: "यदि प्रधानमंत्री का पद पर रहते हुए अचानक निधन हो जाए या वे इस्तीफा दे दें, तो केंद्रीय मंत्रिपरिषद पर क्या प्रभाव पड़ता है?",
+                oEn: ["The senior-most minister automatically becomes PM and Council continues", "Only the PM's portfolio becomes vacant while the Council stays unaffected", "The entire Council of Ministers stands automatically dissolved", "Lok Sabha is automatically dissolved immediately"],
+                oHi: ["वरिष्ठतम मंत्री स्वतः पीएम बन जाता है और परिषद चलती रहती है", "केवल पीएम का पद रिक्त होता है और परिषद पर कोई असर नहीं पड़ता", "संपूर्ण मंत्रिपरिषद स्वतः ही भंग (dissolved) हो जाती है", "लोकसभा तुरंत स्वतः भंग हो जाती है"],
+                a: 2,
+                sE: "Since the Prime Minister is the keystone/head of the cabinet, the resignation or death of the PM automatically dissolves the entire Council of Ministers.",
+                sH: "प्रधानमंत्री मंत्रिपरिषद के केंद्र बिंदु होते हैं, इसलिए उनके इस्तीफे या मृत्यु से पूरी मंत्रिपरिषद स्वतः ही भंग हो जाती है।"
+            },
+            {
+                e: "Who was the first Prime Minister of India to resign from office?",
+                h: "अपने पद से त्यागपत्र देने वाले भारत के पहले प्रधानमंत्री कौन थे?",
+                oEn: ["Chaudhary Charan Singh", "Morarji Desai", "V.P. Singh", "Chandra Shekhar"],
+                oHi: ["चौधरी चरण सिंह", "मोरारजी देसाई", "वी.पी. सिंह", "चंद्रशेखर"],
+                a: 1,
+                sE: "Morarji Desai was the first Prime Minister of India to resign from office (in 1979).",
+                sH: "मोरारजी देसाई पद से त्यागपत्र देने वाले भारत के पहले प्रधानमंत्री थे (1979 में)।"
+            },
+            {
+                e: "Which of the following Prime Ministers was appointed as PM while being a member of the Rajya Sabha?",
+                h: "निम्नलिखित में से कौन से प्रधानमंत्री राज्यसभा के सदस्य रहते हुए प्रधानमंत्री बने थे?",
+                oEn: ["Morarji Desai", "Lal Bahadur Shastri", "H.D. Deve Gowda", "Chandra Shekhar"],
+                oHi: ["मोरारजी देसाई", "लाल बहादुर शास्त्री", "एच.डी. देवेगौड़ा", "चंद्रशेखर"],
+                a: 2,
+                sE: "Indira Gandhi (1966), H.D. Deve Gowda (1996), and Manmohan Singh (2004) were members of the Rajya Sabha when appointed/serving as PM.",
+                sH: "एच.डी. देवेगौड़ा (1996), इंदिरा गांधी और डॉ. मनमोहन सिंह राज्यसभा के सदस्य रहते हुए प्रधानमंत्री बने थे।"
+            },
+            {
+                e: "Who among the following Prime Ministers served as PM without ever having held a Union Cabinet Minister portfolio prior to taking office?",
+                h: "निम्नलिखित में से कौन से प्रधानमंत्री केंद्रीय कैबिनेट मंत्री बने बिना ही सीधे भारत के प्रधानमंत्री बने?",
+                oEn: ["H.D. Deve Gowda", "Manmohan Singh", "Indira Gandhi", "Atal Bihari Vajpayee"],
+                oHi: ["एच.डी. देवेगौड़ा", "मनमोहन सिंह", "इंदिरा गांधी", "अटल बिहारी वाजपेयी"],
+                a: 0,
+                sE: "H.D. Deve Gowda was the Chief Minister of Karnataka and became Prime Minister of India without having been a Union Cabinet Minister.",
+                sH: "एच.डी. देवेगौड़ा कर्नाटक के मुख्यमंत्री थे और केंद्रीय कैबिनेट मंत्री रहे बिना सीधे प्रधानमंत्री बने थे।"
+            },
+            {
+                e: "Under Article 77(3), who makes the rules for the convenient transaction of the business of the Government of India?",
+                h: "अनुच्छेद 77(3) के तहत भारत सरकार के कार्य के सुगम संचालन के लिए नियम कौन बनाता है?",
+                oEn: ["The Prime Minister", "The Cabinet Secretary", "The President", "The Speaker of Lok Sabha"],
+                oHi: ["प्रधानमंत्री", "कैबिनेट सचिव", "राष्ट्रपति", "लोकसभा अध्यक्ष"],
+                a: 2,
+                sE: "Article 77(3) empowers the President to make rules for the more convenient transaction of business of the Government of India and allocation of work among Ministers.",
+                sH: "अनुच्छेद 77(3) के अनुसार कार्य संचालन और मंत्रियों के बीच कार्य आवंटन के नियम राष्ट्रपति द्वारा बनाए जाते हैं।"
+            },
+            {
+                e: "Under Article 78(c), what can the President require the Prime Minister to do regarding a decision taken by an individual minister?",
+                h: "अनुच्छेद 78(c) के तहत, किसी मंत्री द्वारा लिए गए निर्णय पर राष्ट्रपति प्रधानमंत्री से क्या अपेक्षा कर सकते हैं?",
+                oEn: ["Dismiss the minister immediately", "Submit the matter for consideration of the Council of Ministers", "Forward the file to the Supreme Court for legal vetting", "Place the matter before the Governor"],
+                oHi: ["मंत्री को तुरंत बर्खास्त करने के लिए", "उस मामले को मंत्रिपरिषद के विचारार्थ प्रस्तुत करने के लिए", "फाइल को कानूनी जांच के लिए सुप्रीम कोर्ट भेजने के लिए", "मामले को राज्यपाल के समक्ष रखने के लिए"],
+                a: 1,
+                sE: "Under Article 78(c), if the President so requires, the PM must submit for the consideration of the Council of Ministers any matter on which a decision was taken by a minister but not considered by the Council.",
+                sH: "अनुच्छेद 78(c) के तहत यदि किसी मंत्री ने कोई निर्णय लिया है किंतु उस पर मंत्रिपरिषद ने विचार नहीं किया, तो राष्ट्रपति उसे मंत्रिपरिषद के समक्ष रखने को कह सकते हैं।"
+            },
+            {
+                e: "Who described the Prime Minister as the 'Linchpin of the Government'?",
+                h: "प्रधानमंत्री को 'सरकार की धुरी' (Linchpin of the Government) के रूप में किसने वर्णित किया था?",
+                oEn: ["Dr. B.R. Ambedkar", "Jawaharlal Nehru", "Sardar Vallabhbhai Patel", "Lord Morley"],
+                oHi: ["डॉ. बी.आर. अम्बेडकर", "जवाहरलाल नेहरू", "सरदार वल्लभभाई पटेल", "लॉर्ड मोर्ले"],
+                a: 1,
+                sE: "Pt. Jawaharlal Nehru described the PM as the 'Linchpin of the Government' as the PM acts as the vital connecting link between the Cabinet and the President.",
+                sH: "पंडित जवाहरलाल नेहरू ने प्रधानमंत्री को 'सरकार की धुरी (Linchpin)' कहा था क्योंकि वे राष्ट्रपति और मंत्रिपरिषद के बीच मुख्य कड़ी होते हैं।"
+            },
+            {
+                e: "What was Dr. B.R. Ambedkar's statement regarding the constitutional role of the Prime Minister in relation to collective responsibility?",
+                h: "सामूहिक उत्तरदायित्व के संबंध में प्रधानमंत्री की भूमिका पर डॉ. बी.आर. अम्बेडकर का क्या कथन था?",
+                oEn: [
+                    "\"The Prime Minister is first among equals with no special superiority.\"",
+                    "\"Collective responsibility can be achieved only through the instrumentality of the Prime Minister.\"",
+                    "\"The Prime Minister is merely a decorative figurehead in cabinet discussions.\"",
+                    "\"The Cabinet functions independently of the Prime Minister's leadership.\""
+                ],
+                oHi: [
+                    "\"प्रधानमंत्री समानों में प्रथम हैं और उन्हें कोई विशेष श्रेष्ठता प्राप्त नहीं है।\"",
+                    "\"सामूहिक जिम्मेदारी केवल प्रधानमंत्री के माध्यम से ही प्राप्त की जा सकती है।\"",
+                    "\"कैबिनेट की चर्चाओं में प्रधानमंत्री केवल एक औपचारिक प्रमुख होते हैं।\"",
+                    "\"मंत्रिमंडल प्रधानमंत्री के नेतृत्व से पूरी तरह स्वतंत्र होकर कार्य करता है।\""
+                ],
+                a: 1,
+                sE: "Dr. B.R. Ambedkar observed: 'Collective responsibility can be achieved only through the instrumentality of the Prime Minister.'",
+                sH: "डॉ. बी.आर. अम्बेडकर ने कहा था: 'सामूहिक जिम्मेदारी केवल प्रधानमंत्री के माध्यम से ही प्राप्त की जा सकती है।'"
+            }
+        ];
+
+        const state = {
+            current: 0,
+            answers: new Array(QUESTIONS.length).fill(null),
+            locked: new Array(QUESTIONS.length).fill(false),
+            mode: 'test',
+            lang: 'en',
+            startTime: null,
+            timerInterval: null,
+            elapsed: 0
+        };
+
+        function $(id) { return document.getElementById(id); }
+
+        function toast(msg) {
+            const t = $('toast');
+            $('toastText').textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            return String(m).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+        }
+
+        function startApp(mode) {
+            state.mode = mode;
+            $('startScreen').classList.add('hidden');
+            $('quizApp').classList.remove('hidden');
+            state.startTime = Date.now();
+            state.timerInterval = setInterval(() => {
+                state.elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+                $('timerText').textContent = formatTime(state.elapsed);
+            }, 1000);
+            renderQuestion();
+            buildPalette();
+        }
+
+        function toggleLang() {
+            state.lang = state.lang === 'en' ? 'hi' : 'en';
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const i = state.current;
+            const q = QUESTIONS[i];
+            const isQuiz = state.mode === 'quiz';
+            const locked = state.locked[i];
+            const userAns = state.answers[i];
+            const qTxt = state.lang === 'en' ? q.e : q.h;
+            const opts = state.lang === 'en' ? q.oEn : q.oHi;
+
+            let optsHtml = '';
+            opts.forEach((opt, idx) => {
+                let cls = '', tag = '';
+                if (isQuiz && locked) {
+                    if (idx === q.a) {
+                        cls = 'correct';
+                        tag = '<span class="opt-tag">Correct</span>';
+                    }
+                    if (userAns === idx && idx !== q.a) {
+                        cls = 'wrong';
+                        tag = '<span class="opt-tag">Your Ans</span>';
+                    }
+                } else if (userAns === idx) {
+                    cls = 'selected';
+                }
+                optsHtml += `
+                    <div class="opt ${cls} ${locked ? 'locked' : ''}" onclick="selectOption(${idx})">
+                        <div class="opt-letter">${String.fromCharCode(65 + idx)}</div>
+                        <div class="opt-text">${opt}</div>
+                        ${tag}
+                    </div>
+                `;
+            });
+
+            const solTxt = state.lang === 'en' ? q.sE : q.sH;
+            let solHtml = (isQuiz && locked) ? `
+                <div class="sol-box">
+                    <div class="sol-head"><i class="fas fa-lightbulb"></i> Explanation</div>
+                    <div style="white-space: pre-line;">${solTxt}</div>
+                </div>
+            ` : '';
+
+            $('quizMain').innerHTML = `
+                <div class="q-card">
+                    <div class="q-top">
+                        <div class="q-num-badge">Question ${i + 1} of ${QUESTIONS.length}</div>
+                        <button class="lang-btn" onclick="toggleLang()">
+                            <i class="fas fa-language"></i> ${state.lang === 'en' ? 'Switch to हिन्दी' : 'Switch to English'}
+                        </button>
+                    </div>
+                    <div class="q-text">${qTxt}</div>
+                    <div class="opts">${optsHtml}</div>
+                    ${solHtml}
+                </div>
+            `;
+
+            $('prevBtn').disabled = i === 0;
+            $('nextLabel').textContent = i === QUESTIONS.length - 1 ? 'Finish' : 'Next';
+            updatePaletteGrid();
+        }
+
+        function selectOption(idx) {
+            if (state.mode === 'quiz' && state.locked[state.current]) return;
+            state.answers[state.current] = idx;
+            if (state.mode === 'quiz') {
+                state.locked[state.current] = true;
+                if (idx === QUESTIONS[state.current].a) {
+                    toast('Correct! 🎉');
+                } else {
+                    toast('Incorrect');
+                }
+            }
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (state.current > 0) {
+                state.current--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (state.current < QUESTIONS.length - 1) {
+                state.current++;
+                renderQuestion();
+            } else {
+                openSubmitModal();
+            }
+        }
+
+        function buildPalette() {
+            const grid = $('paletteGrid');
+            grid.innerHTML = '';
+            QUESTIONS.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'pal-btn';
+                btn.id = 'pal-' + i;
+                btn.textContent = i + 1;
+                btn.onclick = () => {
+                    state.current = i;
+                    closePalette();
+                    renderQuestion();
+                };
+                grid.appendChild(btn);
+            });
+            updatePaletteGrid();
+        }
+
+        function updatePaletteGrid() {
+            QUESTIONS.forEach((_, i) => {
+                const btn = $('pal-' + i);
+                if (!btn) return;
+                btn.className = 'pal-btn';
+                if (i === state.current) btn.classList.add('current');
+                if (state.answers[i] !== null) btn.classList.add('answered');
+            });
+        }
+
+        function openPalette() {
+            $('paletteDrawer').classList.add('open');
+            $('paletteOverlay').classList.add('open');
+        }
+
+        function closePalette() {
+            $('paletteDrawer').classList.remove('open');
+            $('paletteOverlay').classList.remove('open');
+        }
+
+        function openSubmitModal() {
+            const ans = state.answers.filter(a => a !== null).length;
+            $('modalAttempted').textContent = ans;
+            $('modalUnattempted').textContent = QUESTIONS.length - ans;
+            $('submitModal').classList.add('open');
+        }
+
+        function closeSubmitModal() {
+            $('submitModal').classList.remove('open');
+        }
+
+        function confirmSubmit() {
+            closeSubmitModal();
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            let correct = 0, wrong = 0;
+            state.answers.forEach((ans, i) => {
+                if (ans !== null) {
+                    if (ans === QUESTIONS[i].a) correct++;
+                    else wrong++;
+                }
+            });
+            $('resultsInner').innerHTML = `
+                <h2>Test Completed!</h2>
+                <p style="color:var(--text-muted);margin:8px 0;">Total Time: ${formatTime(state.elapsed)}</p>
+                <div class="res-score-card">
+                    <div class="res-score-val">${correct} / ${QUESTIONS.length}</div>
+                    <div>Score</div>
+                </div>
+                <div class="res-grid">
+                    <div class="res-item"><div class="res-item-val" style="color:var(--green)">${correct}</div><div>Correct</div></div>
+                    <div class="res-item"><div class="res-item-val" style="color:var(--red)">${wrong}</div><div>Wrong</div></div>
+                </div>
+                <button class="modal-btn confirm" onclick="location.reload()">Re-attempt</button>
+            `;
+            $('resultsScreen').classList.add('open');
+        }
+    </script>
+</body>
+</html>
